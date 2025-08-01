@@ -1,6 +1,6 @@
 package models
 
-type Elements struct{
+type Element struct{
 	Id int
 	English string
 	Polish string
@@ -10,7 +10,7 @@ type Elements struct{
 }
 
 func NewElement(id, setId int, english, polish, exmapleSentence, synonym string) *Element{
-	return &Elements{
+	return &Element{
 		Id:id,
 		English: english,
 		Polish: polish,

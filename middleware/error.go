@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	models "github.com/slodkiadrianek/EI/model"
+	models "github.com/slodkiadrianek/EI/models"
 )
 
 func ErrorMiddleware() gin.HandlerFunc {

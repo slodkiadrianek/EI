@@ -7,6 +7,7 @@ type Set struct{
 	CategoryId  int
 }
 
+
 func NewSet(name , description string, categoryId, id int) *Set{
 	return &Set{
 		Id:id,
@@ -14,4 +15,12 @@ func NewSet(name , description string, categoryId, id int) *Set{
 		Description: description,
 		CategoryId: categoryId,
 	}
+}
+
+type SetWithElements struct {
+	Id int `json:"id" sql:"id"`
+	Name string `json:"name" sql:"name"`
+	Description string `json:"description" sql:"description"`
+	CategoryId int `json:"categoryId" sql:"categoryId"`
+	Elements []Element
 }

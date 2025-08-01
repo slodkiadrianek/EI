@@ -31,35 +31,35 @@ func (c *CategorySet) CreateCategory(ctx context.Context,category DTO.Category) 
 	return nil
 }
 
-func (c *CategorySet) GetCategories(ctx context.Context) ([]models.Elements, error) {
+func (c *CategorySet) GetCategories(ctx context.Context) ([]models.Element, error) {
 	query := "SELECT * FROM categories";
 	stmt,err := c.Db.Prepare(query)
 	if err !=nil{
 		c.LoggerService.Error("Failed to prepare query for execution")
-		return []models.Elements{}, models.NewError(500, "Database", "Failed to get data from a database")
+		return []models.Element{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
-	var data []models.Elements
+	var data []models.Element
 	fmt.Println(data);
 	err  = stmt.QueryRowContext(ctx).Scan()
 	if err != nil{
 		c.LoggerService.Error("Failed to execute query")
-		return []models.Elements{}, models.NewError(500, "Database", "Failed to get data from a database")
+		return []models.Element{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
 	return data, nil
 }
 
-func (c *CategorySet) GetCategory(ctx context.Context, categoryId int) (models.Elements, error) {
+func (c *CategorySet) GetCategory(ctx context.Context, categoryId int) (models.Element, error) {
 	query := "SELECT * FROM categories WHERE id = $1";
 	stmt,err := c.Db.Prepare(query)
 	if err != nil{
 		c.LoggerService.Error("Failed to prepare query for execution")
-		return models.Elements{}, models.NewError(500, "Database", "Failed to get data from a database")
+		return models.Element{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
-	var data models.Elements
+	var data models.Element
 	err = stmt.QueryRowContext(ctx, categoryId).Scan()
 	if err != nil{
 		c.LoggerService.Error("Failed to execute query")
-		return models.Elements{}, models.NewError(500, "Database", "Failed to get data from a database")
+		return models.Element{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
 	return data, nil
 }
