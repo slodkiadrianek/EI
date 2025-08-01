@@ -18,7 +18,6 @@ func NewSetsController(setsService *services.SetsService) *SetsController {
 }
 
 func GetSets(c *gin.Context) {
-	// Logic to get all sets
 	c.JSON(200, gin.H{"message": "Get all sets"})
 }
 

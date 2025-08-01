@@ -16,7 +16,7 @@ func NewSetsRoutes(setsController interface{}) *SetsRoutes {
 func(s *SetsRoutes) SetupSetsRouter(router *gin.RouterGroup) {
 	sets:= router.Group("/sets");
 	{
-		sets.GET("/", )
+		sets.GET("/categories/:id", )
 		sets.GET("/:id", )
 		sets.POST("/", )
 		sets.PUT("/:id", )
