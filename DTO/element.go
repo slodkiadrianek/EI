@@ -5,10 +5,10 @@ type Element struct {
 	Polish string
 	ExampleSentence string
 	Synonym string
-	SetId string
+	SetId int
 }
 
-func NewElement(english string, polish string, exmapleSentence string, synonym string, setId string) *Element{
+func NewElement(english string, polish string, exmapleSentence string, synonym string, setId int) *Element{
 	return &Element{
 		English: english,
 		Polish: polish,

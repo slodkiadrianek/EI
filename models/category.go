@@ -1,9 +1,9 @@
 package models
 
 type Category struct{
-	Id int
-	Name string
-	Description string
+	Id int `json:"id"`
+	Name string `json:"name"`
+	Description string 	`json:"description"` 
 }
 
 func NewCategory(id int, name, description string) *Category{

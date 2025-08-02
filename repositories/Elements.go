@@ -32,7 +32,7 @@ func (e *ElementReplository) CreateNewElements(ctx context.Context, elements []D
 	query := fmt.Sprintf(`INSERT INTO elements(english, polish, exampleSentence, synonym, setId) VALUES %s`,
 		placeholders,
 	)
-	stmt, err := e.Db.Prepare(query)
+	stmt, err := e.Db.PrepareContext(ctx,query)
 	if err != nil {
 		e.LoggerService.Error("Failed to prepare query for execution")
 		return models.NewError(500, "Database", "Failed to insert data to a database")
@@ -40,7 +40,7 @@ func (e *ElementReplository) CreateNewElements(ctx context.Context, elements []D
 	_, err = stmt.ExecContext(ctx, values)
 	if err != nil {
 		e.LoggerService.Error("Failed to execute query")
-		return models.NewError(500, "Database", "Failed to insert data to a database")
+		return models.NewError(500, "Database", err.Error())
 	}
 	return nil	
 }

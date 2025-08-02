@@ -21,7 +21,7 @@ func readFile() map[string]string {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
-		lineSplitted := strings.Split(line, "=")
+		lineSplitted := strings.SplitN(line, "=", 2)
 		envVariables[lineSplitted[0]] = lineSplitted[1]
 	}
 	if err := scanner.Err(); err != nil {

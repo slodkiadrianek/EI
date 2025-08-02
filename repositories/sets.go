@@ -22,15 +22,22 @@ func NewSetsRepository(loggerService *utils.Logger, db *sql.DB) *SetRepository {
 }
 
 
-func(s *SetRepository) CreateNewSet(ctx context.Context,set *DTO.Set) error {
+func(s *SetRepository) CreateNewSet(ctx context.Context,set *DTO.Set)  (int, error) {
 	query := "INSERT INTO sets(name,description,categoryId) VALUES($1,$2,$3)"
-	stmt, err := s.Db.Prepare(query)
+	stmt, err := s.Db.PrepareContext(ctx,query)
 	if err != nil{
 		s.LoggerService.Error("Failed to prepare query for execution")
-		return models.NewError(500, "Database", "Failed to insert data to a database")
+		return 0,models.NewError(500, "Database", "Failed to insert data to a database")
 	}
-	stmt.QueryRowContext(ctx,set)
-	return nil
+	defer stmt.Close()
+	var setId int
+	err =stmt.QueryRowContext(ctx,set.Name, set.Description, set.CategoryId).Scan(&setId)
+	if err != nil{
+		s.LoggerService.Error("Failed to execute query")
+		return 0,models.NewError(500, "Database", "Failed to insert data to a database")
+	}
+	s.LoggerService.Info("Set created successfully")
+	return setId,nil
 }
 
 func(s *SetRepository)GetSetsFromCategory(ctx context.Context, categoryId int) ([]models.Set ,error) {

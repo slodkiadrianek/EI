@@ -1,8 +1,8 @@
 package DTO
 
 type Category struct{
-	Name string
-	Description string
+	Name string `json:"name"`
+	Description string `json:"description"`
 }
 
 func NewCategory(name string, description string) *Category{
