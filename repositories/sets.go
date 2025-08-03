@@ -21,34 +21,33 @@ func NewSetsRepository(loggerService *utils.Logger, db *sql.DB) *SetRepository {
 	}
 }
 
-
-func(s *SetRepository) CreateNewSet(ctx context.Context,set *DTO.Set)  (int, error) {
-	query := "INSERT INTO sets(name,description,categoryId) VALUES($1,$2,$3)"
-	stmt, err := s.Db.PrepareContext(ctx,query)
-	if err != nil{
+func (s *SetRepository) CreateNewSet(ctx context.Context, set *DTO.Set) (int, error) {
+	query := "INSERT INTO sets(name,description,category_id) VALUES($1,$2,$3) RETURNING id"
+	stmt, err := s.Db.PrepareContext(ctx, query)
+	if err != nil {
 		s.LoggerService.Error("Failed to prepare query for execution")
-		return 0,models.NewError(500, "Database", "Failed to insert data to a database")
+		return 0, models.NewError(500, "Database", err.Error())
 	}
 	defer stmt.Close()
 	var setId int
-	err =stmt.QueryRowContext(ctx,set.Name, set.Description, set.CategoryId).Scan(&setId)
-	if err != nil{
+	err = stmt.QueryRowContext(ctx, set.Name, set.Description, set.CategoryId).Scan(&setId)
+	if err != nil {
 		s.LoggerService.Error("Failed to execute query")
-		return 0,models.NewError(500, "Database", "Failed to insert data to a database")
+		return 0, models.NewError(500, "Database", err.Error())
 	}
 	s.LoggerService.Info("Set created successfully")
-	return setId,nil
+	return setId, nil
 }
 
-func(s *SetRepository)GetSetsFromCategory(ctx context.Context, categoryId int) ([]models.Set ,error) {
-	query := "SELECT * FROM sets WHERE categoryId = $1"
+func (s *SetRepository) GetSetsFromCategory(ctx context.Context, categoryId int) ([]models.Set, error) {
+	query := "SELECT * FROM sets WHERE category_id = $1"
 	stmt, err := s.Db.Prepare(query)
-	if err != nil{
+	if err != nil {
 		s.LoggerService.Error("Failed to prepare query for execution")
 		return []models.Set{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
-	sql,err := stmt.QueryContext(ctx, categoryId)
-	if err != nil{
+	sql, err := stmt.QueryContext(ctx, categoryId)
+	if err != nil {
 		s.LoggerService.Error("Failed to execute query")
 		return []models.Set{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
@@ -69,7 +68,7 @@ func(s *SetRepository)GetSetsFromCategory(ctx context.Context, categoryId int) (
 	return []models.Set{}, nil
 }
 
-func(s *SetRepository) GetSetWithElements(ctx context.Context, setId int) (*models.SetWithElements, error) {
+func (s *SetRepository) GetSetWithElements(ctx context.Context, setId int) (*models.SetWithElements, error) {
 	query := `
 	SELECT 
 		sets.id as id,
@@ -84,12 +83,12 @@ func(s *SetRepository) GetSetWithElements(ctx context.Context, setId int) (*mode
 		LEFT JOIN elements ON sets.id = elements.setId 
 		WHERE sets.id = $1`
 	stmt, err := s.Db.Prepare(query)
-	if err != nil{
+	if err != nil {
 		s.LoggerService.Error("Failed to prepare query for execution")
 		return nil, models.NewError(500, "Database", "Failed to get data from a database")
 	}
-	sql,err := stmt.QueryContext(ctx, setId)
-	if err != nil{
+	sql, err := stmt.QueryContext(ctx, setId)
+	if err != nil {
 		s.LoggerService.Error("Failed to execute query")
 		return nil, models.NewError(500, "Database", "Failed to get data from a database")
 	}

@@ -1,10 +1,8 @@
-CREATE IF NOT EXISTS TABLE elements (
+CREATE  TABLE IF NOT EXISTS elements (
     id SERIAL PRIMARY KEY,
     set_id INTEGER NOT NULL,
     english VARCHAR(64) NOT NULL,
     polish VARCHAR(64) NOT NULL,
-    synonym VARCHAR(64), NOT NULL,
-    exampleSentence TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    example_sentence TEXT NOT NULL,
+    synonym VARCHAR(64), NOT NULL
 );

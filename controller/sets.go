@@ -10,13 +10,14 @@ import (
 )
 
 type SetsController struct {
-	SetsService *services.SetsService
+	SetsService     *services.SetsService
 	ElementsService *services.ElementService
 }
 
-func NewSetsController(setsService *services.SetsService) *SetsController {
+func NewSetsController(setsService *services.SetsService, elementsService *services.ElementService) *SetsController {
 	return &SetsController{
-		SetsService: setsService,
+		SetsService:     setsService,
+		ElementsService: elementsService,
 	}
 }
 
@@ -37,7 +38,7 @@ func (s *SetsController) CreateSet(c *gin.Context) {
 	var data schema.CreateSet
 	data.Name = name
 	data.Description = description
-	val,err := strconv.Atoi(categoryId)
+	val, err := strconv.Atoi(categoryId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid category ID"})
 		return
@@ -49,6 +50,10 @@ func (s *SetsController) CreateSet(c *gin.Context) {
 	}
 	defer file.Close()
 	setId, err := s.SetsService.CreateSet(c, data.CategoryId, &data)
+	if err != nil {
+		c.Error(err)
+		return
+	}
 	err = s.ElementsService.CreateElements(c, file, "name", setId)
 	if err != nil {
 		c.Error(err)

@@ -19,16 +19,19 @@ func main() {
 	loggerService := logger.CreateLogger()
 	Db := config.NewDb(configEnv.DbLink)
 	setsRepository := repositories.NewSetsRepository(&loggerService, Db.DbConnection)
-	// elementsRepository := repositories.NewElementRepository(&loggerService, Db.DbConnection)
+	elementsRepository := repositories.NewElementRepository(&loggerService, Db.DbConnection)
+	elementService := services.NewElementService(elementsRepository, &loggerService)
 	categoryRepository := repositories.NewCategoryRepository(&loggerService, Db.DbConnection)
 	categoriesService := services.NewCategoryService(categoryRepository, &loggerService)
 	categoryController := controller.NewCategoryController(categoriesService)
 	setsService := services.NewSetsService(setsRepository, &loggerService)
-	setsController := controller.NewSetsController(setsService)
+	setsController := controller.NewSetsController(setsService, elementService)
+	elementsController := controller.NewElementController(elementService)
 	router := gin.Default()
 	routesConfig := routes.SetupRoutes{
-		SetsRoutes: routes.NewSetsRoutes(setsController),
+		SetsRoutes:       routes.NewSetsRoutes(setsController),
 		CategoriesRoutes: routes.NewcategoriesRoutes(categoryController),
+		ElementsRoutes:   routes.NewElementsRoutes(elementsController),
 	}
 
 	router.Use(middleware.ErrorMiddleware())

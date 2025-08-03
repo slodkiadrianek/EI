@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"fmt"
 	"mime/multipart"
 	"strings"
 
@@ -32,9 +31,6 @@ func (e *ElementService) CreateElements(ctx context.Context, file multipart.File
 	var elements []DTO.Element
 	for _, record := range records {
 		splittedRecord := strings.Split(strings.Join(record, ""), "/")
-		for _, v := range splittedRecord {
-			fmt.Println("Splitted Record:", v)
-		}
 		if len(splittedRecord) < 4 {
 			return models.NewError(400, "InvalidData", "Invalid record format: "+strings.Join(record, ","))
 		}
@@ -53,3 +49,12 @@ func (e *ElementService) CreateElements(ctx context.Context, file multipart.File
 	}
 	return nil
 }
+
+func (e *ElementService) GetElementsBySetId(ctx context.Context, setId int) ([]models.Element, error) {
+	elements, err := e.ElementRepository.GetElementsBySetId(ctx, setId)
+	if err != nil {
+		return []models.Element{}, err
+	}
+	return elements, nil
+}
+
