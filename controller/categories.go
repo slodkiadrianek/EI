@@ -48,3 +48,14 @@ func (cc *CategoryController) GetCategory(c *gin.Context) {
 		"category": category,
 	})
 }
+
+func (cc *CategoryController) GetCategoryWithSets(c *gin.Context) {
+	categoryParams := utils.ExtractValidatedData[schema.GetCategory]("validatedParams", c)
+	categoriesWithSets,err :=cc.CategoryService.GetCategoryWithSets(c, categoryParams.CategoryId)
+	if err != nil{
+		c.Error(err)
+		return 
+	}
+	c.JSON(200, gin.H{"data":categoriesWithSets})
+}
+

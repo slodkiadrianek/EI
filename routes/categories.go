@@ -23,6 +23,7 @@ func(c *CategoriesRoutes) SetupCategoriesRouter(router *gin.RouterGroup) {
 	{
 		categories.GET("/",c.CategoriesController.GetCategories) 
 		categories.GET("/:categoryId", middleware.ValidateRequestData[*schema.GetCategory]("params"), c.CategoriesController.GetCategory)
+		categories.GET("/:categoryId/sets", middleware.ValidateRequestData[*schema.GetCategory]("params"), c.CategoriesController.GetCategoryWithSets)
 		categories.POST("/", middleware.ValidateRequestData[*schema.CreateCategory]("body"), c.CategoriesController.CreateCategory)
 	}
 }

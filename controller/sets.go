@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/slodkiadrianek/EI/schema"
 	"github.com/slodkiadrianek/EI/services"
+	"github.com/slodkiadrianek/EI/utils"
 )
 
 type SetsController struct {
@@ -60,4 +61,9 @@ func (s *SetsController) CreateSet(c *gin.Context) {
 		return
 	}
 	c.JSON(201, gin.H{})
+}
+
+func(s *SetsController) deleteSet(c *gin.Context) {
+	params := utils.ExtractValidatedData[*schema.GetSet]("validatedParams", c)
+	
 }

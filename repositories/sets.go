@@ -109,3 +109,18 @@ func (s *SetRepository) GetSetWithElements(ctx context.Context, setId int) (*mod
 	}
 	return &set, nil
 }
+
+func (s *SetRepository) DeleteSet(ctx context.Context, setId int) error{
+	query :="DELETE FROM sets WHERE id = $1"
+	stmt,err := s.Db.PrepareContext(ctx, query)
+	if err !=nil{
+		s.LoggerService.Error("Failed to prepare query for execution")
+		return  models.NewError(500, "Database", "Failed to delete data from a database")
+	}
+	_,err = stmt.ExecContext(ctx, setId)
+	if err != nil{
+		s.LoggerService.Error("Failed to execute query")
+		return  models.NewError(500, "Database", "Failed to delete data from database")
+	}
+	return nil
+}

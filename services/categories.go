@@ -38,10 +38,15 @@ func (c *CategoryService) GetCategories(ctx context.Context) ([]models.Category,
 	return categories, nil
 }
 
-func (c *CategoryService) GetCategory(ctx context.Context, categoryId int) (models.Category, error) {
-	category, err := c.CategoryRepository.GetCategory(ctx, categoryId)
+func (c *CategoryService) GetCategory(ctx context.Context, categoryId int) (models.Category, error){
+	category, err := c.CategoryRepository.
+}
+
+
+func (c *CategoryService) GetCategoryWithSets(ctx context.Context, categoryId int) ([]models.CategoryWithSet, error) {
+	categoriesWithSets, err := c.CategoryRepository.GetCategoryWithSets(ctx, categoryId)
 	if err != nil {
-		return models.Category{}, err
+		return []models.CategoryWithSet{}, err
 	}
-	return category, nil
+	return categoriesWithSets, nil
 }

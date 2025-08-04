@@ -19,3 +19,19 @@ var CreateSetSchema = z.Struct(z.Shape{
 	"description": z.String().Required(),
 	"categoryId":  z.Int().Required(),
 })
+
+type GetSet struct {
+	SetId string
+}
+
+func (g *GetSet) Validate() (z.ZogIssueMap, error){
+	errMap := getSetSchema.Validate(g)
+	if errMap !=nil{
+		return errMap, nil
+	}
+	return nil, nil
+}
+
+var getSetSchema = z.Struct(z.Shape{
+	"setId": z.String().Required(),
+})
