@@ -37,17 +37,7 @@ func (cc *CategoryController) GetCategories(c *gin.Context) {
 		"categories": categories,
 	})
 }
-// func (cc *CategoryController) GetCategory(c *gin.Context) {
-// 	categoryParams := utils.ExtractValidatedData[schema.GetCategory]("validatedParams", c)
-// 	category, err := cc.CategoryService.GetCategory(c, categoryParams.CategoryId)
-// 	if err != nil {
-// 		c.Error(err)
-// 		return
-// 	}
-// 	c.JSON(200, gin.H{
-// 		"category": category,
-// 	})
-// }
+
 
 func (cc *CategoryController) GetCategoryWithSets(c *gin.Context) {
 	categoryParams := utils.ExtractValidatedData[schema.GetCategory]("validatedParams", c)
@@ -59,3 +49,13 @@ func (cc *CategoryController) GetCategoryWithSets(c *gin.Context) {
 	c.JSON(200, gin.H{"data":categoriesWithSets})
 }
 
+
+func (cc *CategoryController) DeleteCategory(c *gin.Context){
+	categoryParams := utils.ExtractValidatedData[schema.GetCategory]("validatedParams", c)
+	err := cc.CategoryService.DeleteCategory(c, categoryParams.CategoryId)
+	if err !=nil{
+		c.Error(err)
+		return
+	}
+	c.JSON(204,gin.H{})
+}

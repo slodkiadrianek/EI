@@ -39,9 +39,7 @@ func (c *CategoryService) GetCategories(ctx context.Context) ([]models.Category,
 	return categories, nil
 }
 
-// func (c *CategoryService) GetCategory(ctx context.Context, categoryId int) (models.Category, error){
-// 	category, err := c.CategoryRepository.
-// }
+
 
 func (c *CategoryService) GetCategoryWithSets(ctx context.Context, categoryId int) ([]models.CategoryWithSet, error) {
 	categoriesWithSets, err := c.CategoryRepository.GetCategoryWithSets(ctx, categoryId)
@@ -51,3 +49,10 @@ func (c *CategoryService) GetCategoryWithSets(ctx context.Context, categoryId in
 	return categoriesWithSets, nil
 }
 
+func (c *CategoryService) DeleteCategory(ctx context.Context, categoryId int) error{
+	err := c.CategoryRepository.DeleteCategory(ctx, categoryId)
+	if err != nil{
+		return err
+	}
+	return nil
+}

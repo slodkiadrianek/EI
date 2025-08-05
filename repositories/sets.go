@@ -68,7 +68,7 @@ func (s *SetRepository) GetSetsFromCategory(ctx context.Context, categoryId int)
 	return []models.Set{}, nil
 }
 
-func (s *SetRepository) GetSetWithElements(ctx context.Context, setId int) (*models.SetWithElements, error) {
+func (s *SetRepository) GetSetWithElements(ctx context.Context,) ([]models.SetWithElements, error) {
 	query := `
 	SELECT 
 		sets.id as id,
@@ -80,34 +80,34 @@ func (s *SetRepository) GetSetWithElements(ctx context.Context, setId int) (*mod
 		elements.ExampleSentence,
 		elements.Synonym
 	 FROM sets  
-		LEFT JOIN elements ON sets.id = elements.setId 
-		WHERE sets.id = $1`
-	stmt, err := s.Db.Prepare(query)
+		LEFT JOIN elements ON sets.id = elements.setId `
+	stmt, err := s.Db.PrepareContext(ctx,query)
 	if err != nil {
 		s.LoggerService.Error("Failed to prepare query for execution")
 		return nil, models.NewError(500, "Database", "Failed to get data from a database")
 	}
-	sql, err := stmt.QueryContext(ctx, setId)
+	sql, err := stmt.QueryContext(ctx)
 	if err != nil {
 		s.LoggerService.Error("Failed to execute query")
 		return nil, models.NewError(500, "Database", "Failed to get data from a database")
 	}
-	var set models.SetWithElements
+	var sets []models.SetWithElements
 	for sql.Next() {
-		var element models.Element
-		err = sql.Scan(&set.Id, &set.Name, &set.Description,
+		var element models.SetWithElements
+		err = sql.Scan(&element.Id, &element.Name, &element.Description,
 			&element.Id, &element.English, &element.Polish,
 			&element.ExampleSentence, &element.Synonym)
 		if err != nil {
 			s.LoggerService.Error("Failed to scan row")
 			return nil, models.NewError(500, "Database", "Failed to get data from a database")
 		}
+		sets = append(sets, element)
 	}
 	if err = sql.Err(); err != nil {
 		s.LoggerService.Error("Failed to iterate over rows")
 		return nil, models.NewError(500, "Database", "Failed to get data from a database")
 	}
-	return &set, nil
+	return sets, nil
 }
 
 func (s *SetRepository) DeleteSet(ctx context.Context, setId int) error{

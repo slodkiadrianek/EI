@@ -22,16 +22,6 @@ func NewSetsController(setsService *services.SetsService, elementsService *servi
 	}
 }
 
-func GetSets(c *gin.Context) {
-	c.JSON(200, gin.H{"message": "Get all sets"})
-}
-
-func GetSetByID(c *gin.Context) {
-	// Logic to get a set by ID
-	id := c.Param("id")
-	c.JSON(200, gin.H{"message": "Get set by ID", "id": id})
-}
-
 func (s *SetsController) CreateSet(c *gin.Context) {
 	name := c.Request.FormValue("name")
 	description := c.Request.FormValue("description")
@@ -63,7 +53,21 @@ func (s *SetsController) CreateSet(c *gin.Context) {
 	c.JSON(201, gin.H{})
 }
 
-// func(s *SetsController) deleteSet(c *gin.Context) {
-// 	params := utils.ExtractValidatedData[*schema.GetSet]("validatedParams", c)
-	
-// }
+func (s *SetsController) GetSetsWithElements(c *gin.Context){
+	setsWithElements, err :=s.SetsService.GetSetsWithElements(c)
+	if err != nil{
+		c.Error(err)
+		return 
+	}
+	c.JSON(200, gin.H{"data": setsWithElements})
+}
+
+func(s *SetsController) DeleteSet(c *gin.Context) {
+	params := utils.ExtractValidatedData[schema.GetSet]("validatedParams", c)
+	err := s.SetsService.DeleteSet(c, params.SetId)
+	if err != nil{
+		c.Error(err)
+		return 
+	}
+	c.JSON(204, gin.H{})
+}
