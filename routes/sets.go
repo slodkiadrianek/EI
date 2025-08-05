@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/slodkiadrianek/EI/controller"
@@ -30,5 +29,4 @@ func(s *SetsRoutes) SetupSetsRouter(router *gin.RouterGroup) {
 		sets.DELETE("/:id",middleware.ValidateRequestData[*schema.GetSet]("params"), s.SetsController.DeleteSet)
 		// sets.GET("/categories/:id", )
 	}
-	fmt.Print(sets)
 }

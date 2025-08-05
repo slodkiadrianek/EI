@@ -22,8 +22,5 @@ type SetWithElements struct {
 	Name string `json:"name" sql:"name"`
 	Description string `json:"description" sql:"description"`
 	CategoryId int `json:"categoryId" sql:"categoryId"`
-	English string `json:"english"`
-	Polish string `json:"polish"`
-	ExampleSentence string `json:"exampleSentence"`
-	Synonym string `json:"synonym"`
+	Elements []Element `json:"elements" sql:"elements"`
 }

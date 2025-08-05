@@ -95,3 +95,41 @@ func (e *ElementReplository) GetElementsBySetId(ctx context.Context, setId int) 
 	}
 	return elements, nil
 }
+
+
+func (e *ElementReplository) GetElements(ctx context.Context,) ([]models.Element, error) {
+	query := `
+	SELECT 
+		id, 
+		english,
+		polish, 
+		example_sentence, 
+		synonym,
+		set_id
+	 FROM elements `
+	stmt, err := e.Db.PrepareContext(ctx,query)
+	if err != nil {
+		e.LoggerService.Error("Failed to prepare query for execution")
+		return []models.Element{}, models.NewError(500, "Database", "Failed to get data from a database")
+	}
+	sql, err := stmt.QueryContext(ctx)
+	if err != nil {
+		e.LoggerService.Error("Failed to execute query")
+		return []models.Element{}, models.NewError(500, "Database", "Failed to get data from a database")
+	}
+	var elements []models.Element
+	for sql.Next() {
+		var element models.Element
+		err = sql.Scan(&element.Id, &element.English, &element.Polish, &element.ExampleSentence, &element.Synonym, &element.SetId)
+		if err != nil {
+			e.LoggerService.Error("Failed to scan row")
+			return []models.Element{}, models.NewError(500, "Database", err.Error())
+		}
+		elements = append(elements, element)
+	}
+	if err = sql.Err(); err != nil {
+		e.LoggerService.Error("Failed to iterate over rows")
+		return []models.Element{}, models.NewError(500, "Database", "Failed to get data from a database")
+	}
+	return elements, nil
+}

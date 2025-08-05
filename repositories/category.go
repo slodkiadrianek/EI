@@ -3,8 +3,6 @@ package repositories
 import (
 	"context"
 	"database/sql"
-	"fmt"
-
 	"github.com/slodkiadrianek/EI/DTO"
 	"github.com/slodkiadrianek/EI/models"
 	"github.com/slodkiadrianek/EI/utils"
@@ -23,7 +21,6 @@ func NewCategoryRepository(loggerService *utils.Logger, db *sql.DB) *CategoryRep
 }
 
 func (c *CategoryRepository) CreateCategory(ctx context.Context, category DTO.Category) error {
-	fmt.Print("CategoryRepository: CreateCategory called with category: ", category)
 	query := "INSERT INTO categories(name,description) VALUES($1,$2)"
 	stmt, err := c.Db.PrepareContext(ctx,query)
 	if err != nil {

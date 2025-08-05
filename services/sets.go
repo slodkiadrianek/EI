@@ -12,12 +12,14 @@ import (
 
 type SetsService struct {
 	SetRepository *repositories.SetRepository
+	ElementRepository *repositories.ElementReplository
 	LoggerService *utils.Logger
 }
 
-func NewSetsService(setsRepository *repositories.SetRepository, loggerService *utils.Logger) *SetsService {
+func NewSetsService(setsRepository *repositories.SetRepository, elementRepository *repositories.ElementReplository,loggerService *utils.Logger) *SetsService {
 	return &SetsService{
 		SetRepository: setsRepository,
+		ElementRepository: elementRepository,
 		LoggerService: loggerService,
 	}
 }
@@ -33,9 +35,25 @@ func (s *SetsService) CreateSet(ctx context.Context,categoryId int, set *schema.
 }
 
 func (s *SetsService) GetSetsWithElements(ctx context.Context) ([]models.SetWithElements, error){
-	setsWithElements, err := s.SetRepository.GetSetWithElements(ctx)
+	sets, err := s.SetRepository.GetSets(ctx)
+	if err != nil{
+		return []models.SetWithElements{} , err
+	}
+	elements, err := s.ElementRepository.GetElements(ctx)
 	if err != nil{
 		return []models.SetWithElements{}, err
+	}
+	setsWithElements := make([]models.SetWithElements, len(sets))
+	for i := range sets {
+		for _, element := range elements {
+			if sets[i].Id == element.SetId {
+				setsWithElements[i].CategoryId = sets[i].CategoryId
+				setsWithElements[i].Description = sets[i].Description
+				setsWithElements[i].Id = sets[i].Id
+				setsWithElements[i].Name = sets[i].Name
+				setsWithElements[i].Elements = append(setsWithElements[i].Elements, element)
+			}
+		}
 	}
 	return setsWithElements, nil
 }

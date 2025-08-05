@@ -26,7 +26,7 @@ func main() {
 	categoryRepository := repositories.NewCategoryRepository(&loggerService, Db.DbConnection)
 	categoriesService := services.NewCategoryService(categoryRepository, &loggerService)
 	categoryController := controller.NewCategoryController(categoriesService)
-	setsService := services.NewSetsService(setsRepository, &loggerService)
+	setsService := services.NewSetsService(setsRepository, elementsRepository,&loggerService)
 	setsController := controller.NewSetsController(setsService, elementService)
 	elementsController := controller.NewElementController(elementService)
 	router := gin.Default()

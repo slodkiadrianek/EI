@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/slodkiadrianek/EI/controller"
@@ -30,5 +29,4 @@ func(s *ElementsRoutes) SetupElementsRouter(router *gin.RouterGroup) {
 		// Elements.DELETE("/:id", )
 		// Elements.GET("/categories/:id", )
 	}
-	fmt.Print(elements)
 }
