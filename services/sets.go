@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/slodkiadrianek/EI/DTO"
+	"github.com/slodkiadrianek/EI/models"
 	"github.com/slodkiadrianek/EI/repositories"
 	"github.com/slodkiadrianek/EI/schema"
 	"github.com/slodkiadrianek/EI/utils"
@@ -29,4 +30,20 @@ func (s *SetsService) CreateSet(ctx context.Context,categoryId int, set *schema.
 	}
 	s.LoggerService.Info("Set created successfully")
 	return setId,nil
+}
+
+func (s *SetsService) GetSetsWithElements(ctx context.Context) ([]models.SetWithElements, error){
+	setsWithElements, err := s.SetRepository.GetSetWithElements(ctx)
+	if err != nil{
+		return []models.SetWithElements{}, err
+	}
+	return setsWithElements, nil
+}
+
+func (s *SetsService) DeleteSet(ctx context.Context, setId int) error{
+	err := s.SetRepository.DeleteSet(ctx, setId)
+	if err != nil{
+		return err
+	}
+	return nil
 }

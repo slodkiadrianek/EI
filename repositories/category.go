@@ -107,3 +107,20 @@ func (c *CategoryRepository) GetCategoryWithSets(ctx context.Context, categoryId
 	}
 	return data, nil
 }
+
+func (c *CategoryRepository) DeleteCategory(ctx context.Context, categoryId int ) error {
+	query :=`
+		DELETE FROM categories WHERE id = $1
+	`
+	stmt, err := c.Db.PrepareContext(ctx, query)
+	if err != nil{
+		c.LoggerService.Error("Failed to prepare query for execution")
+		return models.NewError(500, "Database", "Failed to get data from a database")
+	}
+	_,err  = stmt.ExecContext(ctx, categoryId)
+	if err != nil{
+		c.LoggerService.Error("Failed to execute query")
+		return models.NewError(500, "Database", "Failed to insert data to a database")
+	}
+	return nil
+}

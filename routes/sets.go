@@ -5,6 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/slodkiadrianek/EI/controller"
+	"github.com/slodkiadrianek/EI/middleware"
+	"github.com/slodkiadrianek/EI/schema"
 )
 
 type SetsRoutes struct{
@@ -24,8 +26,8 @@ func(s *SetsRoutes) SetupSetsRouter(router *gin.RouterGroup) {
 		// sets.GET("/categories/:id", )
 		// sets.GET("/:id", )
 		sets.POST("/",s.SetsController.CreateSet) // Assuming CreateSet is a method in SetsController
-		// sets.PUT("/:id", )
-		// sets.DELETE("/:id", )
+		sets.GET("/", s.SetsController.GetSetsWithElements)
+		sets.DELETE("/:id",middleware.ValidateRequestData[*schema.GetSet]("params"), s.SetsController.DeleteSet)
 		// sets.GET("/categories/:id", )
 	}
 	fmt.Print(sets)

@@ -21,7 +21,7 @@ var CreateSetSchema = z.Struct(z.Shape{
 })
 
 type GetSet struct {
-	SetId string
+	SetId int `json:"setId" uri:"setId"`
 }
 
 func (g *GetSet) Validate() (z.ZogIssueMap, error){
