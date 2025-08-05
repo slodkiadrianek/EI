@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 
+	"github.com/gin-contrib/cors"
+
 	"github.com/gin-gonic/gin"
 	"github.com/slodkiadrianek/EI/config"
 	"github.com/slodkiadrianek/EI/controller"
@@ -35,6 +37,8 @@ func main() {
 	}
 
 	router.Use(middleware.ErrorMiddleware())
+	
+	    router.Use(cors.Default())
 
 	routesConfig.SetupRouter(router)
 	err := router.SetTrustedProxies([]string{"127.0.0.1", "::1"})

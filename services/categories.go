@@ -30,6 +30,7 @@ func (c *CategoryService) CreateCategory(ctx context.Context, category *schema.C
 	}
 	return nil
 }
+
 func (c *CategoryService) GetCategories(ctx context.Context) ([]models.Category, error) {
 	categories, err := c.CategoryRepository.GetCategories(ctx)
 	if err != nil {
@@ -38,10 +39,9 @@ func (c *CategoryService) GetCategories(ctx context.Context) ([]models.Category,
 	return categories, nil
 }
 
-func (c *CategoryService) GetCategory(ctx context.Context, categoryId int) (models.Category, error){
-	category, err := c.CategoryRepository.
-}
-
+// func (c *CategoryService) GetCategory(ctx context.Context, categoryId int) (models.Category, error){
+// 	category, err := c.CategoryRepository.
+// }
 
 func (c *CategoryService) GetCategoryWithSets(ctx context.Context, categoryId int) ([]models.CategoryWithSet, error) {
 	categoriesWithSets, err := c.CategoryRepository.GetCategoryWithSets(ctx, categoryId)
@@ -50,3 +50,4 @@ func (c *CategoryService) GetCategoryWithSets(ctx context.Context, categoryId in
 	}
 	return categoriesWithSets, nil
 }
+
