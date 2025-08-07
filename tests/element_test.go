@@ -1,21 +1,22 @@
-package main
+package tests
 
 import (
-	"log"
+	"net/http"
+	"net/http/httptest"
+	"testing"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/slodkiadrianek/EI/config"
 	"github.com/slodkiadrianek/EI/controller"
-	"github.com/slodkiadrianek/EI/middleware"
 	"github.com/slodkiadrianek/EI/repositories"
 	"github.com/slodkiadrianek/EI/routes"
 	"github.com/slodkiadrianek/EI/services"
 	"github.com/slodkiadrianek/EI/utils"
-	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/stretchr/testify/assert"
 )
 
-func main() {
+func SetupRouterTest() *gin.Engine {
+	router := gin.Default()
 	configEnv := config.SetConfig()
 	logger := utils.NewLogger()
 	loggerService := logger.CreateLogger()
@@ -29,23 +30,25 @@ func main() {
 	SetService := services.NewSetService(setsRepository, elementsRepository, &loggerService)
 	SetsController := controller.NewSetsController(SetService, elementService)
 	ElementsController := controller.NewElementController(elementService)
-	router := gin.Default()
 	routesConfig := routes.SetupRoutes{
 		SetRoutes:      routes.NewSetRoutes(SetsController),
 		CategoryRoutes: routes.NewCategoryRoutes(CategoryController),
 		ElementRoutes:  routes.NewElementRoutes(ElementsController),
 	}
-
-	router.Use(middleware.ErrorMiddleware())
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	router.Use(cors.Default())
 	routesConfig.SetupRouter(router)
-	err := router.SetTrustedProxies([]string{"127.0.0.1", "::1"})
+	return router
+}
+
+func TestGetElementsBySetId(t *testing.T) {
+	router := SetupRouterTest()
+	req, err := http.NewRequest("GET", "/elements/sets/1", nil)
 	if err != nil {
-		log.Fatalf("Failed to set trusted proxies: %v", err)
+		t.Fatal(err)
 	}
-	err = router.Run(":" + configEnv.Port)
-	if err != nil {
-		panic(err)
+	rr := httptest.NewRecorder()
+	router.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Expected status code %d got %d", http.StatusOK, status)
 	}
+	assert.Equal(t, rr.Code, http.StatusOK)
 }
