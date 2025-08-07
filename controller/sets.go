@@ -35,7 +35,7 @@ func (s *SetsController) CreateSet(c *gin.Context) {
 		return
 	}
 	data.CategoryId = val
-	file, _, err := c.Request.FormFile("csv")
+	file, _, err := c.Request.FormFile("file")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "File upload error: " + err.Error()})
 	}

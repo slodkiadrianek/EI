@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/gin-contrib/cors"
@@ -12,7 +13,6 @@ import (
 	"github.com/slodkiadrianek/EI/routes"
 	"github.com/slodkiadrianek/EI/services"
 	"github.com/slodkiadrianek/EI/utils"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -20,6 +20,7 @@ func main() {
 	logger := utils.NewLogger()
 	loggerService := logger.CreateLogger()
 	Db := config.NewDb(configEnv.DbLink)
+
 	setsRepository := repositories.NewSetRepository(&loggerService, Db.DbConnection)
 	elementsRepository := repositories.NewElementRepository(&loggerService, Db.DbConnection)
 	elementService := services.NewElementService(elementsRepository, &loggerService)
@@ -37,9 +38,11 @@ func main() {
 	}
 
 	router.Use(middleware.ErrorMiddleware())
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Use(cors.Default())
 	routesConfig.SetupRouter(router)
+	fmt.Println(configEnv)
+	fmt.Println("Server is running on port:", configEnv.Port)
+	fmt.Println(configEnv.Port)
 	err := router.SetTrustedProxies([]string{"127.0.0.1", "::1"})
 	if err != nil {
 		log.Fatalf("Failed to set trusted proxies: %v", err)

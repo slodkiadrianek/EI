@@ -33,7 +33,7 @@ func readFile() map[string]string {
 func SetConfig() *Env {
 	envVariables := readFile()
 	return &Env{
-		Port:         envVariables["Port"],
+		Port:         envVariables["PORT"],
 		DbLink:       envVariables["DbLink"],
 	}
 }
