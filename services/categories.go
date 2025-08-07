@@ -39,6 +39,13 @@ func (c *CategoryService) GetCategories(ctx context.Context) ([]models.Category,
 	return categories, nil
 }
 
+func (c *CategoryService) GetCategory(ctx context.Context, categoryId int) (models.Category, error){
+	category , err := c.CategoryRepository.GetCategory(ctx, categoryId)
+	if err != nil{
+		return models.Category{}, err
+	}
+	return category, nil
+}
 
 
 func (c *CategoryService) GetCategoryWithSets(ctx context.Context, categoryId int) ([]models.CategoryWithSet, error) {

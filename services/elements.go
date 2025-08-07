@@ -12,11 +12,11 @@ import (
 )
 
 type ElementService struct {
-	ElementRepository *repositories.ElementReplository
+	ElementRepository *repositories.ElementRepository
 	LoggerService     *utils.Logger
 }
 
-func NewElementService(elementRepository *repositories.ElementReplository, loggerService *utils.Logger) *ElementService {
+func NewElementService(elementRepository *repositories.ElementRepository, loggerService *utils.Logger) *ElementService {
 	return &ElementService{
 		ElementRepository: elementRepository,
 		LoggerService:     loggerService,

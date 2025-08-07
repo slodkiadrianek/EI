@@ -11,13 +11,13 @@ import (
 )
 
 type SetsController struct {
-	SetsService     *services.SetsService
+	SetService     *services.SetService
 	ElementsService *services.ElementService
 }
 
-func NewSetsController(setsService *services.SetsService, elementsService *services.ElementService) *SetsController {
+func NewSetsController(SetService *services.SetService, elementsService *services.ElementService) *SetsController {
 	return &SetsController{
-		SetsService:     setsService,
+		SetService:     SetService,
 		ElementsService: elementsService,
 	}
 }
@@ -40,7 +40,7 @@ func (s *SetsController) CreateSet(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "File upload error: " + err.Error()})
 	}
 	defer file.Close()
-	setId, err := s.SetsService.CreateSet(c, data.CategoryId, &data)
+	setId, err := s.SetService.CreateSet(c, data.CategoryId, &data)
 	if err != nil {
 		c.Error(err)
 		return
@@ -54,7 +54,7 @@ func (s *SetsController) CreateSet(c *gin.Context) {
 }
 
 func (s *SetsController) GetSetsWithElements(c *gin.Context){
-	setsWithElements, err :=s.SetsService.GetSetsWithElements(c)
+	setsWithElements, err :=s.SetService.GetSetsWithElements(c)
 	if err != nil{
 		c.Error(err)
 		return 
@@ -64,7 +64,7 @@ func (s *SetsController) GetSetsWithElements(c *gin.Context){
 
 func(s *SetsController) DeleteSet(c *gin.Context) {
 	params := utils.ExtractValidatedData[schema.GetSet]("validatedParams", c)
-	err := s.SetsService.DeleteSet(c, params.SetId)
+	err := s.SetService.DeleteSet(c, params.SetId)
 	if err != nil{
 		c.Error(err)
 		return 

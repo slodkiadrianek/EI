@@ -5,4 +5,5 @@ CREATE  TABLE IF NOT EXISTS elements (
     polish VARCHAR(64) NOT NULL,
     example_sentence TEXT NOT NULL,
     synonym VARCHAR(64), NOT NULL
+    FOREIGN KEY(set_id) REFERENCES sets(id) ON DELETE CASCADE
 );

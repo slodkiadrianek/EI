@@ -1,25 +1,24 @@
 package routes
 
 import (
-
 	"github.com/gin-gonic/gin"
 	"github.com/slodkiadrianek/EI/controller"
 	"github.com/slodkiadrianek/EI/middleware"
 	"github.com/slodkiadrianek/EI/schema"
 )
 
-type SetsRoutes struct{
+type SetRoutes struct{
 	SetsController *controller.SetsController
 }
 
-func NewSetsRoutes(setsController *controller.SetsController) *SetsRoutes {
-	return &SetsRoutes{
+func NewSetRoutes(setsController *controller.SetsController) *SetRoutes {
+	return &SetRoutes{
 		SetsController: setsController,
 	}
 }
 
 
-func(s *SetsRoutes) SetupSetsRouter(router *gin.RouterGroup) {
+func(s *SetRoutes) SetupSetsRouter(router *gin.RouterGroup) {
 	sets:= router.Group("/sets");
 	{
 		// sets.GET("/categories/:id", )

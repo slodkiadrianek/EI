@@ -10,21 +10,21 @@ import (
 	"github.com/slodkiadrianek/EI/utils"
 )
 
-type SetsService struct {
+type SetService struct {
 	SetRepository *repositories.SetRepository
-	ElementRepository *repositories.ElementReplository
+	ElementRepository *repositories.ElementRepository
 	LoggerService *utils.Logger
 }
 
-func NewSetsService(setsRepository *repositories.SetRepository, elementRepository *repositories.ElementReplository,loggerService *utils.Logger) *SetsService {
-	return &SetsService{
+func NewSetService(setsRepository *repositories.SetRepository, elementRepository *repositories.ElementRepository,loggerService *utils.Logger) *SetService {
+	return &SetService{
 		SetRepository: setsRepository,
 		ElementRepository: elementRepository,
 		LoggerService: loggerService,
 	}
 }
 
-func (s *SetsService) CreateSet(ctx context.Context,categoryId int, set *schema.CreateSet ) (int, error) {
+func (s *SetService) CreateSet(ctx context.Context,categoryId int, set *schema.CreateSet ) (int, error) {
 	setDTO := DTO.NewSet( set.Name, set.Description, categoryId)
 	setId, err := s.SetRepository.CreateNewSet(ctx, setDTO)
 	if err != nil {
@@ -34,7 +34,7 @@ func (s *SetsService) CreateSet(ctx context.Context,categoryId int, set *schema.
 	return setId,nil
 }
 
-func (s *SetsService) GetSetsWithElements(ctx context.Context) ([]models.SetWithElements, error){
+func (s *SetService) GetSetsWithElements(ctx context.Context) ([]models.SetWithElements, error){
 	sets, err := s.SetRepository.GetSets(ctx)
 	if err != nil{
 		return []models.SetWithElements{} , err
@@ -58,7 +58,7 @@ func (s *SetsService) GetSetsWithElements(ctx context.Context) ([]models.SetWith
 	return setsWithElements, nil
 }
 
-func (s *SetsService) DeleteSet(ctx context.Context, setId int) error{
+func (s *SetService) DeleteSet(ctx context.Context, setId int) error{
 	err := s.SetRepository.DeleteSet(ctx, setId)
 	if err != nil{
 		return err

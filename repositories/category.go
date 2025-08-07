@@ -24,13 +24,13 @@ func (c *CategoryRepository) CreateCategory(ctx context.Context, category DTO.Ca
 	query := "INSERT INTO categories(name,description) VALUES($1,$2)"
 	stmt, err := c.Db.PrepareContext(ctx,query)
 	if err != nil {
-		c.LoggerService.Error("Failed to prepare query for execution")
+		c.LoggerService.Error("Failed to prepare query for execution", err.Error())
 		return models.NewError(500, "Database", "Failed to insert data to a database")
 	}
 	defer stmt.Close()
 	_,err = stmt.ExecContext(ctx, category.Name, category.Description)
 	if err != nil {
-		c.LoggerService.Error("Failed to execute query")
+		c.LoggerService.Error("Failed to execute query", err.Error())
 		return models.NewError(500, "Database", "Failed to insert data to a database")
 	}
 	return nil
@@ -40,26 +40,27 @@ func (c *CategoryRepository) GetCategories(ctx context.Context) ([]models.Catego
 	query := "SELECT * FROM categories"
 	stmt, err := c.Db.PrepareContext(ctx, query)
 	if err != nil {
-		c.LoggerService.Error("Failed to prepare query for execution")
+		c.LoggerService.Error("Failed to prepare query for execution", err.Error())
 		return []models.Category{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
+	defer stmt.Close()
 	var categories []models.Category
 	sql, err := stmt.QueryContext(ctx)
 	if err != nil {
-		c.LoggerService.Error("Failed to execute query")
+		c.LoggerService.Error("Failed to execute query", err.Error())
 		return []models.Category{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
 	for sql.Next() {
 		var category models.Category
 		err = sql.Scan(&category.Id, &category.Name, &category.Description)
 		if err != nil {
-			c.LoggerService.Error("Failed to scan row")
+			c.LoggerService.Error("Failed to scan row", err.Error())
 			return []models.Category{}, models.NewError(500, "Database", "Failed to get data from a database")
 		}
 		categories = append(categories, category)
 	}
 	if err = sql.Err(); err != nil {
-		c.LoggerService.Error("Failed to iterate over rows")
+		c.LoggerService.Error("Failed to iterate over rows", err.Error())
 		return []models.Category{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
 	return categories, nil
@@ -79,30 +80,47 @@ func (c *CategoryRepository) GetCategoryWithSets(ctx context.Context, categoryId
 	WHERE id = $1`
 	stmt, err := c.Db.PrepareContext(ctx, query)
 	if err != nil {
-		c.LoggerService.Error("Failed to prepare query for execution")
+		c.LoggerService.Error("Failed to prepare query for execution", err.Error())
 		return []models.CategoryWithSet{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
 	defer stmt.Close()
 	var data []models.CategoryWithSet
 	sql, err := stmt.QueryContext(ctx, categoryId)
 	if err != nil {
-		c.LoggerService.Error("Failed to execute query")
+		c.LoggerService.Error("Failed to execute query", err.Error())
 		return []models.CategoryWithSet{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
 	for sql.Next() {
 		var categoryWithSet models.CategoryWithSet
 		err = sql.Scan(&categoryWithSet.CategoryId, &categoryWithSet.CategoryName, &categoryWithSet.CategoryDescription, &categoryWithSet.SetId, &categoryWithSet.SetName,&categoryWithSet.SetDescription)
 		if err != nil{
-			c.LoggerService.Error("Failed to scan row")
+			c.LoggerService.Error("Failed to scan row", err.Error())
 			return []models.CategoryWithSet{}, models.NewError(500, "Database", "Failed to get data from a database")
 		}
 		data = append(data, categoryWithSet)
 	}
 	if err = sql.Err(); err != nil {
-		c.LoggerService.Error("Failed to iterate over rows")
+		c.LoggerService.Error("Failed to iterate over rows", err.Error())
 		return []models.CategoryWithSet{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
 	return data, nil
+}
+
+func (c *CategoryRepository) GetCategory(ctx context.Context, categoryId int) (models.Category, error){
+	query := `SELECT * FROM categories WHERE id = $1`
+	stmt, err := c.Db.PrepareContext(ctx, query)
+	if err != nil{
+		c.LoggerService.Error("Failed to prepare query for execution", err.Error())
+		return models.Category{}, models.NewError(500, "Database", "Failed to get data from a database")
+	}
+	defer stmt.Close()
+	var category models.Category
+	err = stmt.QueryRowContext(ctx, categoryId).Scan(&category.Id, &category.Name, &category.Description)
+	if err != nil{
+		c.LoggerService.Error("Failed to execute query", err.Error())
+		return models.Category{}, models.NewError(500, "Database", "Failed to get data from a database")
+	}
+	return category, nil
 }
 
 func (c *CategoryRepository) DeleteCategory(ctx context.Context, categoryId int ) error {
@@ -111,12 +129,13 @@ func (c *CategoryRepository) DeleteCategory(ctx context.Context, categoryId int 
 	`
 	stmt, err := c.Db.PrepareContext(ctx, query)
 	if err != nil{
-		c.LoggerService.Error("Failed to prepare query for execution")
+		c.LoggerService.Error("Failed to prepare query for execution", err.Error())
 		return models.NewError(500, "Database", "Failed to get data from a database")
 	}
+	defer stmt.Close()
 	_,err  = stmt.ExecContext(ctx, categoryId)
 	if err != nil{
-		c.LoggerService.Error("Failed to execute query")
+		c.LoggerService.Error("Failed to execute query", err.Error())
 		return models.NewError(500, "Database", "Failed to insert data to a database")
 	}
 	return nil

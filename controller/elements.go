@@ -18,7 +18,7 @@ func NewElementController(elementService *services.ElementService) *ElementContr
 }
 
 func (e *ElementController) GetElementsBySetId(c *gin.Context) {
-	params := utils.ExtractValidatedData[schema.ElementsById]("validatedParams", c)
+	params := utils.ExtractValidatedData[schema.ElementById]("validatedParams", c)
 	elements, err := e.ElementService.GetElementsBySetId(c, params.SetId)
 	if err != nil {
 		c.Error(err)

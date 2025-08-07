@@ -12,21 +12,21 @@ import (
 	"github.com/slodkiadrianek/EI/utils"
 )
 
-type ElementReplository struct {
+type ElementRepository struct {
 	LoggerService *utils.Logger
 	Db            *sql.DB
 }
 
-func NewElementRepository(loggerService *utils.Logger, db *sql.DB) *ElementReplository {
-	return &ElementReplository{
+func NewElementRepository(loggerService *utils.Logger, db *sql.DB) *ElementRepository {
+	return &ElementRepository{
 		LoggerService: loggerService,
 		Db:            db,
 	}
 }
 
-func (e *ElementReplository) CreateNewElements(ctx context.Context, elements []DTO.Element) error {
+func (e *ElementRepository) CreateNewElements(ctx context.Context, elements []DTO.Element) error {
 	placeholders := []string{}
-	values := []interface{}{}
+	values := []any{}
 
 	for i, element := range elements {
 		start := i * 5
@@ -47,18 +47,19 @@ func (e *ElementReplository) CreateNewElements(ctx context.Context, elements []D
 
 	stmt, err := e.Db.PrepareContext(ctx, query)
 	if err != nil {
-		e.LoggerService.Error("Failed to prepare query for execution")
+		e.LoggerService.Error("Failed to prepare query for execution", err.Error())
 		return models.NewError(500, "Database", "Failed to insert data to the database")
 	}
+	defer stmt.Close()
 	_, err = stmt.ExecContext(ctx, values...)
 	if err != nil {
-		e.LoggerService.Error("Failed to execute query")
+		e.LoggerService.Error("Failed to execute query", err.Error())
 		return models.NewError(500, "Database", "Failed to insert a data to the database")
 	}
 	return nil
 }
 
-func (e *ElementReplository) GetElementsBySetId(ctx context.Context, setId int) ([]models.Element, error) {
+func (e *ElementRepository) GetElementsBySetId(ctx context.Context, setId int) ([]models.Element, error) {
 	query := `
 	SELECT 
 		id, 
@@ -71,12 +72,13 @@ func (e *ElementReplository) GetElementsBySetId(ctx context.Context, setId int) 
 	 	WHERE set_id = $1`
 	stmt, err := e.Db.Prepare(query)
 	if err != nil {
-		e.LoggerService.Error("Failed to prepare query for execution")
+		e.LoggerService.Error("Failed to prepare query for execution", err.Error())
 		return []models.Element{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
+	defer stmt.Close()
 	sql, err := stmt.QueryContext(ctx, setId)
 	if err != nil {
-		e.LoggerService.Error("Failed to execute query")
+		e.LoggerService.Error("Failed to execute query", err.Error())
 		return []models.Element{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
 	var elements []models.Element
@@ -84,20 +86,20 @@ func (e *ElementReplository) GetElementsBySetId(ctx context.Context, setId int) 
 		var element models.Element
 		err = sql.Scan(&element.Id, &element.English, &element.Polish, &element.ExampleSentence, &element.Synonym, &element.SetId)
 		if err != nil {
-			e.LoggerService.Error("Failed to scan row")
+			e.LoggerService.Error("Failed to scan row", err.Error())
 			return []models.Element{}, models.NewError(500, "Database", err.Error())
 		}
 		elements = append(elements, element)
 	}
 	if err = sql.Err(); err != nil {
-		e.LoggerService.Error("Failed to iterate over rows")
+		e.LoggerService.Error("Failed to iterate over rows", err.Error())
 		return []models.Element{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
 	return elements, nil
 }
 
 
-func (e *ElementReplository) GetElements(ctx context.Context,) ([]models.Element, error) {
+func (e *ElementRepository) GetElements(ctx context.Context,) ([]models.Element, error) {
 	query := `
 	SELECT 
 		id, 
@@ -109,12 +111,13 @@ func (e *ElementReplository) GetElements(ctx context.Context,) ([]models.Element
 	 FROM elements `
 	stmt, err := e.Db.PrepareContext(ctx,query)
 	if err != nil {
-		e.LoggerService.Error("Failed to prepare query for execution")
+		e.LoggerService.Error("Failed to prepare query for execution", err.Error())
 		return []models.Element{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
+	defer stmt.Close()
 	sql, err := stmt.QueryContext(ctx)
 	if err != nil {
-		e.LoggerService.Error("Failed to execute query")
+		e.LoggerService.Error("Failed to execute query", err.Error())
 		return []models.Element{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
 	var elements []models.Element
@@ -122,13 +125,13 @@ func (e *ElementReplository) GetElements(ctx context.Context,) ([]models.Element
 		var element models.Element
 		err = sql.Scan(&element.Id, &element.English, &element.Polish, &element.ExampleSentence, &element.Synonym, &element.SetId)
 		if err != nil {
-			e.LoggerService.Error("Failed to scan row")
+			e.LoggerService.Error("Failed to scan row", err.Error())
 			return []models.Element{}, models.NewError(500, "Database", err.Error())
 		}
 		elements = append(elements, element)
 	}
 	if err = sql.Err(); err != nil {
-		e.LoggerService.Error("Failed to iterate over rows")
+		e.LoggerService.Error("Failed to iterate over rows", err.Error())
 		return []models.Element{}, models.NewError(500, "Database", "Failed to get data from a database")
 	}
 	return elements, nil

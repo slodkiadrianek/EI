@@ -3,4 +3,5 @@ CREATE  TABLE  IF NOT EXISTS sets(
     category_id INTEGER NOT NULL,
     name VARCHAR(64) NOT NULL,
     description TEXT
+    FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE CASCADE
 )

@@ -2,11 +2,11 @@ package schema
 
 import z "github.com/Oudwins/zog"
 
-type ElementsById struct {
+type ElementById struct {
 	SetId int `json:"set_id" uri:"setId"`
 }
 
-func (e *ElementsById) Validate() (z.ZogIssueMap, error) {
+func (e *ElementById) Validate() (z.ZogIssueMap, error) {
 	errMap := ElementsByIdSchema.Validate(e)
 	if errMap != nil {
 		return errMap, nil

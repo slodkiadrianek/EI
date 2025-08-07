@@ -18,8 +18,8 @@ func NewCategoryController(categoryService *services.CategoryService) *CategoryC
 }
 
 func (cc *CategoryController) CreateCategory(c *gin.Context) {
-	data := utils.ExtractValidatedData[schema.CreateCategory]("validatedData", c)
-	err := cc.CategoryService.CreateCategory(c, data)
+	body := utils.ExtractValidatedData[schema.CreateCategory]("validatedData", c)
+	err := cc.CategoryService.CreateCategory(c, body)
 	if err != nil {
 		c.Error(err)
 		return
@@ -40,8 +40,8 @@ func (cc *CategoryController) GetCategories(c *gin.Context) {
 
 
 func (cc *CategoryController) GetCategoryWithSets(c *gin.Context) {
-	categoryParams := utils.ExtractValidatedData[schema.GetCategory]("validatedParams", c)
-	categoriesWithSets,err :=cc.CategoryService.GetCategoryWithSets(c, categoryParams.CategoryId)
+	params := utils.ExtractValidatedData[schema.GetCategory]("validatedParams", c)
+	categoriesWithSets,err :=cc.CategoryService.GetCategoryWithSets(c, params.CategoryId)
 	if err != nil{
 		c.Error(err)
 		return 
@@ -49,10 +49,22 @@ func (cc *CategoryController) GetCategoryWithSets(c *gin.Context) {
 	c.JSON(200, gin.H{"data":categoriesWithSets})
 }
 
+func (cc *CategoryController) GetCategory(c *gin.Context) {
+	params := utils.ExtractValidatedData[schema.GetCategory]("validatedParams", c)
+	category, err :=cc.CategoryService.GetCategory(c, params.CategoryId)
+	if err != nil{
+		c.Error(err)
+		return
+	}
+	c.JSON(200, gin.H{
+		"data": category,
+	})
+}
+
 
 func (cc *CategoryController) DeleteCategory(c *gin.Context){
-	categoryParams := utils.ExtractValidatedData[schema.GetCategory]("validatedParams", c)
-	err := cc.CategoryService.DeleteCategory(c, categoryParams.CategoryId)
+	params := utils.ExtractValidatedData[schema.GetCategory]("validatedParams", c)
+	err := cc.CategoryService.DeleteCategory(c, params.CategoryId)
 	if err !=nil{
 		c.Error(err)
 		return
