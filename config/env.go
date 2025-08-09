@@ -2,17 +2,18 @@ package config
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strings"
 )
 
 type Env struct {
-	Port         string
-	DbLink       string
+	Port   string
+	DbLink string
 }
 
-func readFile() map[string]string {
-	file, err := os.OpenFile(".env", os.O_RDONLY, 0o644)
+func readFile(pathToFile string) map[string]string {
+	file, err := os.OpenFile(pathToFile, os.O_RDONLY, 0o644)
 	if err != nil {
 		panic(err)
 	}
@@ -22,6 +23,7 @@ func readFile() map[string]string {
 	for scanner.Scan() {
 		line := scanner.Text()
 		lineSplitted := strings.SplitN(line, "=", 2)
+		fmt.Println(lineSplitted)
 		envVariables[lineSplitted[0]] = lineSplitted[1]
 	}
 	if err := scanner.Err(); err != nil {
@@ -30,10 +32,10 @@ func readFile() map[string]string {
 	return envVariables
 }
 
-func SetConfig() *Env {
-	envVariables := readFile()
+func SetConfig(pathToFile string) *Env {
+	envVariables := readFile(pathToFile)
 	return &Env{
-		Port:         envVariables["PORT"],
-		DbLink:       envVariables["DbLink"],
+		Port:   envVariables["PORT"],
+		DbLink: envVariables["DbLink"],
 	}
 }
