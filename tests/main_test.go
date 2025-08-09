@@ -3,6 +3,7 @@ package tests
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 
@@ -36,6 +37,7 @@ func NewDependecies() *TestDependecies {
 	configEnv := config.SetConfig("../.env.test")
 	logger := utils.NewLogger()
 	loggerService := logger.CreateLogger()
+	fmt.Println(configEnv.DbLink)
 	db := config.NewDb(configEnv.DbLink)
 	setsRepository := repositories.NewSetRepository(&loggerService, db.DbConnection)
 	elementsRepository := repositories.NewElementRepository(&loggerService, db.DbConnection)

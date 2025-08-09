@@ -1,3 +1,4 @@
 .env
 logs
 go.sum
+.env.test

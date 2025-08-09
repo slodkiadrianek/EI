@@ -7,6 +7,7 @@ type CreateSet struct {
 	Description string `json:"description" binding:"required"`
 	CategoryId  int    `json:"categoryId" binding:"required"`
 }
+
 func (c *CreateSet) Validate() (z.ZogIssueMap, error) {
 	errMap := CreateSetSchema.Validate(c)
 	if errMap != nil {
@@ -14,6 +15,7 @@ func (c *CreateSet) Validate() (z.ZogIssueMap, error) {
 	}
 	return nil, nil
 }
+
 var CreateSetSchema = z.Struct(z.Shape{
 	"name":        z.String().Required(),
 	"description": z.String().Required(),
@@ -24,14 +26,15 @@ type GetSet struct {
 	SetId int `json:"setId" uri:"setId"`
 }
 
-func (g *GetSet) Validate() (z.ZogIssueMap, error){
+func (g *GetSet) Validate() (z.ZogIssueMap, error) {
 	errMap := getSetSchema.Validate(g)
-	if errMap !=nil{
+	if errMap != nil {
 		return errMap, nil
 	}
 	return nil, nil
 }
 
 var getSetSchema = z.Struct(z.Shape{
-	"setId": z.String().Required(),
+	"setId": z.Int().Required(),
 })
+
