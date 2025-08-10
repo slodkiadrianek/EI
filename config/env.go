@@ -1,10 +1,8 @@
 package config
 
 import (
-	"bufio"
-	"fmt"
+	"log"
 	"os"
-	"strings"
 )
 
 type Env struct {
@@ -12,30 +10,19 @@ type Env struct {
 	DbLink string
 }
 
-func readFile(pathToFile string) map[string]string {
-	file, err := os.OpenFile(pathToFile, os.O_RDONLY, 0o644)
-	if err != nil {
-		panic(err)
+func SetConfig() *Env {
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Fatal("PORT environment variable is not set")
 	}
-	defer file.Close()
-	envVariables := make(map[string]string)
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		lineSplitted := strings.SplitN(line, "=", 2)
-		fmt.Println(lineSplitted)
-		envVariables[lineSplitted[0]] = lineSplitted[1]
-	}
-	if err := scanner.Err(); err != nil {
-		panic(err)
-	}
-	return envVariables
-}
 
-func SetConfig(pathToFile string) *Env {
-	envVariables := readFile(pathToFile)
+	dbLink := os.Getenv("DbLink")
+	if dbLink == "" {
+		log.Fatal("DbLink environment variable is not set")
+	}
+
 	return &Env{
-		Port:   envVariables["PORT"],
-		DbLink: envVariables["DbLink"],
+		Port:   port,
+		DbLink: dbLink,
 	}
 }
