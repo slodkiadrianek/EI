@@ -1,6 +1,6 @@
 module github.com/slodkiadrianek/EI
 
-go 1.24.5
+go 1.24
 
 require (
 	github.com/Oudwins/zog v0.21.5 // indirect
