@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	configEnv := config.SetConfig(".env")
+	configEnv := config.SetConfig()
 	logger := utils.NewLogger()
 	loggerService := logger.CreateLogger()
 	Db := config.NewDb(configEnv.DbLink)
