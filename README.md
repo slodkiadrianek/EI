@@ -21,7 +21,7 @@ EI-GO is an api written in golang with support of gin to handle backend logic of
 - **Elements**: Retrieve elements.
 ---
 
-## Technologies Used
+## Routes
 
 - GET /categories/ ~ get all categories;
 - GET /categories/:categoryId ~ Get category by id;
@@ -34,7 +34,7 @@ EI-GO is an api written in golang with support of gin to handle backend logic of
 - DELETE /sets/:setId ~ Will delete the set;
 ---
 
-## Routes
+## Technologies used
 
 - **Go**: Backend runtime.
 - **Gin**: Web framework for building RESTful APIs.
