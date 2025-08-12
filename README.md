@@ -23,11 +23,25 @@ EI-GO is an api written in golang with support of gin to handle backend logic of
 
 ## Technologies Used
 
+- GET /categories/ ~ get all categories;
+- GET /categories/:categoryId ~ Get category by id;
+- GET /categories/:categoryId/sets ~ Get category with sets; 
+- POST /categories/ ~ Create category u need to specify a name and description i body;
+- DELETE /categories/:categoryId ~ Will delete the category;
+- GET /elements/sets/:setId ~  will get set with elements;
+- POST /sets/:setId ~ Will create a set, you have to send name,description,categoryId also csv file as file;
+- GET /sets/:setId ~  Will get set with elements;
+- DELETE /sets/:setId ~ Will delete the set;
+---
+
+## Routes
+
 - **Go**: Backend runtime.
 - **Gin**: Web framework for building RESTful APIs.
 - **PostgreSql**: Database for storing sets,categories and elements.
 
 ---
+
 
 ## Installation
 
